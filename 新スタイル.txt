@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>素因数分解システム</title>
+    <link rel="stylesheet" href="style.css"> <!-- CSSファイルをリンク -->
+    <style>
+        /* 全体のスタイル */
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f0f0f0;
+            display: flex;
+            justify-content: center; /* 横方向中央 */
+            align-items: center; /* 縦方向中央 */
+            height: 100vh; /* 画面全体の高さ */
+            margin: 0;
+        }
+
+        /* コンテナ（フォーム部分）のスタイル */
+        .container {
+            background-color: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+
+        h1 {
+            color: #333;
+        }
+
+        input {
+            padding: 10px;
+            font-size: 16px;
+            width: 200px;
+            margin-bottom: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        button {
+            padding: 10px 20px;
+            font-size: 16px;
+            cursor: pointer;
+            border: none;
+            background-color: #4CAF50;
+            color: white;
+            border-radius: 5px;
+            margin-top: 10px;
+        }
+
+        button:hover {
+            background-color: #45a049;
+        }
+
+        #result {
+            margin-top: 20px;
+            font-size: 18px;
+            color: #333;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h1>数字の素因数分解システム</h1>
+
+        <label for="number">数字を入力：</label>
+        <input type="number" id="number" placeholder="数字を入力" />
+        <button onclick="factorize()">素因数分解</button>
+
+        <p id="result"></p>
+    </div>
+
+    <script>
+        // 素因数分解の関数
+        function factorize() {
+            let num = document.getElementById('number').value;
+            num = parseInt(num);
+            if (isNaN(num) || num <= 1) {
+                document.getElementById('result').innerText = '1より大きい数字を入力してください。';
+                return;
+            }
+
+            let factors = [];
+            let originalNum = num;
+
+            // 2で割り続ける
+            while (num % 2 === 0) {
+                factors.push(2);
+                num /= 2;
+            }
+
+            // 3以上の奇数で割り続ける
+            for (let i = 3; i <= Math.sqrt(num); i += 2) {
+                while (num % i === 0) {
+                    factors.push(i);
+                    num /= i;
+                }
+            }
+
+            // numが素数の場合
+            if (num > 2) {
+                factors.push(num);
+            }
+
+            // 素因数を累乗形式で表示
+            let factorCount = {};
+            factors.forEach(factor => {
+                factorCount[factor] = (factorCount[factor] || 0) + 1;
+            });
+
+            // 結果を作成
+            let result = [];
+            for (let factor in factorCount) {
+                let count = factorCount[factor];
+                if (count > 1) {
+                    result.push(`${factor}^${count}`); // 累乗形式
+                } else {
+                    result.push(factor); // 単独の素因数
+                }
+            }
+
+            // 結果を表示
+            if (result.length === 1 && result[0] === originalNum.toString()) {
+                document.getElementById('result').innerText = `${originalNum} は素数です。`;
+            } else {
+                document.getElementById('result').innerText = `${originalNum} の素因数分解は: ${result.join(' × ')}`;
+            }
+        }
+    </script>
+
+</body>
+</html>
