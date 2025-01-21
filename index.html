@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>素因数分解システム</title>
+    <link rel="stylesheet" href="style.css"> <!-- CSSファイルをリンク -->
 </head>
 <body>
     <h1>数字の素因数分解システム</h1>
@@ -15,6 +16,7 @@
     <p id="result"></p>
 
     <script>
+        // 素因数分解の関数
         function factorize() {
             let num = document.getElementById('number').value;
             num = parseInt(num);
@@ -26,11 +28,13 @@
             let factors = [];
             let originalNum = num;
 
+            // 2で割り続ける
             while (num % 2 === 0) {
                 factors.push(2);
                 num /= 2;
             }
 
+            // 3以上の奇数で割り続ける
             for (let i = 3; i <= Math.sqrt(num); i += 2) {
                 while (num % i === 0) {
                     factors.push(i);
@@ -38,16 +42,36 @@
                 }
             }
 
+            // numが素数の場合
             if (num > 2) {
                 factors.push(num);
             }
 
-            if (factors.length === 1 && factors[0] === originalNum) {
+            // 素因数を累乗形式で表示
+            let factorCount = {};
+            factors.forEach(factor => {
+                factorCount[factor] = (factorCount[factor] || 0) + 1;
+            });
+
+            // 結果を作成
+            let result = [];
+            for (let factor in factorCount) {
+                let count = factorCount[factor];
+                if (count > 1) {
+                    result.push(`${factor}^${count}`); // 累乗形式
+                } else {
+                    result.push(factor); // 単独の素因数
+                }
+            }
+
+            // 結果を表示
+            if (result.length === 1 && result[0] === originalNum.toString()) {
                 document.getElementById('result').innerText = `${originalNum} は素数です。`;
             } else {
-                document.getElementById('result').innerText = `${originalNum} の素因数分解は: ${factors.join(' × ')}`;
+                document.getElementById('result').innerText = `${originalNum} の素因数分解は: ${result.join(' × ')}`;
             }
         }
     </script>
 </body>
 </html>
+
